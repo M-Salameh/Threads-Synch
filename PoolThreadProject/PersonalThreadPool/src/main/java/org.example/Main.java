@@ -6,7 +6,8 @@ public class Main
         for(int i = 0; i < 100; i++)
         {
             int taskNo = i;
-            myThreadPool.execute(new Runnable() {
+            myThreadPool.execute(new Runnable()
+            {
                 @Override
                 public void run() {
                     String message = Thread.currentThread().getName() + ": Task " + (taskNo + 1) ;

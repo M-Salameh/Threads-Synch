@@ -24,7 +24,7 @@ public class TasksQueue <RunnableType>
         synchronized (this)
         {
             if (!allowInsertion) return;
-            if (tasks.size() == maxSize)
+            while (this.size() == maxSize)
             {
                 ///System.out.println("Stuck in Adding");
                 this.wait();
@@ -39,16 +39,14 @@ public class TasksQueue <RunnableType>
         RunnableType task = null;
         synchronized (this)
         {
-            if (tasks.size()==0 && allowInsertion)
+            while (this.size()==0 && allowInsertion)
             {
                 ///System.out.println("Stuck in Removing");
                 this.wait();
             }
-            if (tasks.size() ==0 && !allowInsertion) return task;
-            if(tasks.size() == 0)
+            if (this.size()==0 && !allowInsertion)
             {
-                /*System.out.println("HHHHHHHHHHHH");
-                System.out.println("!allow" + !allowInsertion);*/
+                return task;
             }
             task = tasks.remove(0);
             this.notifyAll();
@@ -61,15 +59,12 @@ public class TasksQueue <RunnableType>
             allowInsertion = false;
             while (this.size() > 0)
             {
-                this.wait(timeOut);
+                Thread.sleep(timeOut);
             }
     }
 
-    private int size()
+    private synchronized int size()
     {
-        synchronized (tasks)
-        {
             return tasks.size();
-        }
     }
 }
